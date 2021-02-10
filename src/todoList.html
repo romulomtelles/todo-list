@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+
+</head>
+
+<body>
+
+    <style type="text/css">
+        /* Include the padding and border in an element's total width and height */
+
+        * {
+            box-sizing: border-box;
+          
+            margin-left: 100px;
+
+            width: 60em
+        }
+
+        /* Remove margins and padding from the list */
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .todoElement {
+            background-color: #fff;
+
+        }
+
+        /* Style the list items */
+        ul li {
+            margin-top: 20px;
+
+            font-size: 18px;
+            transition: 0.2s;
+            width: 200px;
+
+
+        }
+
+        .itemList {
+            margin-top: 20px;
+            position: relative;
+            padding: 10px;
+            width: 5%;
+            background: #343592;
+            color: #fff;
+            float: center;
+            font-size: 100%;
+            text-align: center;
+            border-radius: 4px;
+
+        }
+
+
+
+        /* Style the input */
+        input {
+            margin: 0;
+            margin-top: 50px;
+            border-radius: 8px;
+            width: 45%;
+            padding: 10px;
+            float: left;
+            font-size: 16px;
+            background-color: #555;
+        }
+
+        /* Style the "Add" button */
+        #addButton {
+            margin-top: 50px;
+            padding: 10px;
+            width: 5%;
+            background: #343592;
+            color: #fff;
+            float: center;
+            font-size: 100%;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        #addButton:hover {
+            background-color: #bbb;
+        }
+    </style>
+
+
+    <div>
+
+
+        <div id=inputTodo></div>
+
+        <div id=buttonTodo></div>
+        <ul id=ulTodo></ul>
+
+        <div id=root2>
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/mithril/mithril.js"></script>
+    <script>
+        var root = document.body
+
+
+        var todoList = []
+        var idCounter = 0
+
+        function inputContent() {
+            const inputValue = document.getElementById("todoElement")
+            todoList.push(inputValue.value)
+            inputValue.value = ""
+            addTodoItem()
+        }
+
+        function submit(event) {
+            //console.log(event.target.id)
+            const buttonId = document.getElementById(event.target.id)
+            //document.removeChild(buttonId)
+            todoList.splice(buttonId, 1);
+            addTodoItem()
+            console.log(todoList)
+        }
+
+        function moveUp(event) {
+            console.log(event.target.id)
+            //const buttonId = document.getElementById(event.target.id)
+            //document.removeChild(buttonId)
+            //Move Up logic
+            var idButton = event.target.id
+            if (idButton != 0) {
+                todoList.splice(idButton - 1, 0, todoList[idButton]);
+                idButton++
+                todoList.splice(idButton, 1)
+            }
+
+            addTodoItem()
+            console.log(todoList)
+        }
+
+        function moveDown(event) {
+            console.log(event.target.id)
+            //const buttonId = document.getElementById(event.target.id)
+            //document.removeChild(buttonId)
+            //Move Up logic
+            var idButton = event.target.id
+            if (idButton != todoList.length - 1) {
+                todoList.splice(idButton + 2, 0, todoList[idButton]);
+                todoList.splice(idButton, 1)
+
+            }
+
+            addTodoItem()
+            console.log(todoList)
+        }
+
+        const addTodoItem = () => {
+
+            const mounts = []
+            for (var item in todoList) {
+                mounts.push(m("li", { id: item }, todoList[item]), m('button', { class: 'itemList', id: item, onclick: submit }, '-'),
+                    m('button', { class: 'itemList', id: item, onclick: moveUp }, 'Up'), m('button', { class: 'itemList', id: item, onclick: moveDown }, 'Down'))
+            }
+            idCounter++
+            m.mount(ulTodo, {
+                view: () => mounts
+            })
+
+        }
+
+
+
+        m.mount(buttonTodo, {
+            view: () =>
+                m('button', {
+                    onclick: inputContent,
+                    textContent: '+',
+                    id: 'addButton',
+                }),
+        })
+
+        m.mount(inputTodo, {
+            view: () => [
+                m('input', {
+                    type: 'text',
+                    id: 'todoElement',
+                }),
+                m("ul", { class: 'todoUl' }, ""),
+            ]
+
+        })
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
